@@ -2,6 +2,28 @@
 node {
     def app
 
+            agent {
+        kubernetes {
+            defaultContainer 'aks'
+            yaml '''
+apiVersion: v1
+kind: Pod
+spec:
+  securityContext:
+    runAsUser: 1001
+  containers:
+    - name: aksgit
+      image: ndopbpfoundationacr14943.azurecr.io/devops-platform-image:v0.1.0
+      command:
+        - sleep
+      args:
+        - infinity
+  imagePullSecrets:
+    - name: ndop-bp-lab-ndop-acr-credential-secret
+'''
+        }
+        }
+
     stage('Clone repository') {
         /* Clone repository */
         checkout scm
