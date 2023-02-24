@@ -10,7 +10,7 @@ kind: Pod
 spec:
   containers:
   - name: shell
-    image: tmaier/docker-compose:latest
+    image: tmaier/docker-compose:latestdfafds
     volumeMounts:
     - mountPath: /var/run/docker.sock
       name: docker-socket-volume
