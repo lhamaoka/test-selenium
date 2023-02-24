@@ -1,0 +1,47 @@
+Commands to run locally- 
+
+pytest .
+pytest -k add_remove_elements
+pytest -m "not error" ## unfortunatly this will not work with docker image. I have to fix this
+pytest -m high_priority
+pytest -m sanity_tests
+pytest -m selenium_error
+pytest -m assert_error
+pytest -m python_error
+
+pytest -n 5 --browser "chrome" --executor "remote"
+
+pytest -n 5 --browser "firefox"
+
+======================
+## using docker-compose ##
+
+docker-compose up -d --scale chrome=5 --scale firefox=0
+
+docker-compose -f pytest-image.yml up -d --build
+docker run --network="host" --rm pytest-with-src --browser "chrome" --executor "remote"
+docker-compose -f pytest-image.yml down --rmi local
+
+docker-compose down --rmi local
+
+======
+## using docker swarm ##
+
+docker swarm init --advertise-addr 139.59.78.18
+docker stack deploy -c selenium-swarm-stack.yml grid
+docker service scale grid_chrome=5
+
+docker build -t pytest-with-src -f pytest.Dockerfile .  		## Copy the python scrips and create an image 
+docker run --network="host" --rm pytest-with-src --browser "chrome" --executor "remote"
+docker rmi pytest-with-src
+
+docker stack rm grid
+docker swarm leave --force
+==================
+
+More commands with other options
+
+docker run --network="host" --rm -it -v ~/shared_folder/pytest_framework:/src -v AllureReports:/AllureReports -e ENABLE_PYTEST_CACHE=False -e ENABLE_ALLURE_REPORT=True -e ENABLE_MULTITHEAD=True -e THREAD_COUNT=5 benjose22/selenium_pytest_remote --browser "chrome" --executor "remote"
+
+docker run --network="host" --rm -it -v ~/shared_folder/pytest_framework:/src -v AllureReports:/AllureReports  benjose22/selenium_pytest_remote --browser "chrome" --executor "remote"
+
