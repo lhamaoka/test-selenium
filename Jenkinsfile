@@ -2,27 +2,24 @@
 node {
     def app
 
-            agent {
+    agent {
         kubernetes {
-            defaultContainer 'aks'
             yaml '''
 apiVersion: v1
 kind: Pod
 spec:
-  securityContext:
-    runAsUser: 1001
   containers:
-    - name: aksgit
-      image: ndopbpfoundationacr14943.azurecr.io/devops-platform-image:v0.1.0
-      command:
-        - sleep
-      args:
-        - infinity
-  imagePullSecrets:
-    - name: ndop-bp-lab-ndop-acr-credential-secret
+  - name: shell
+    image: lhamaoka/nodo-java-practica-final:1.0
+    volumeMounts:
+    - mountPath: /var/run/docker.sock
+      name: docker-socket-volume
+    securityContext:
+      privileged: true
 '''
+            defaultContainer 'shell'
         }
-        }
+    }
 
     stage('Clone repository') {
         /* Clone repository */
